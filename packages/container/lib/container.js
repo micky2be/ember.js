@@ -302,7 +302,7 @@ function isSingleton(container, fullName) {
   return container.registry.getOption(fullName, 'singleton') !== false;
 }
 
-function shouldInstantiate(container, fullName) {
+function isInstantiatable(container, fullName) {
   return container.registry.getOption(fullName, 'instantiate') !== false;
 }
 
@@ -336,22 +336,22 @@ function lookup(container, fullName, options = {}) {
 
 function isSingletonClass(container, fullName, { instantiate, singleton }) {
   return (singleton !== false && isSingleton(container, fullName)) &&
-         (!instantiate && !shouldInstantiate(container, fullName));
+         (!instantiate && !isInstantiatable(container, fullName));
 }
 
 function isSingletonInstance(container, fullName, { instantiate, singleton }) {
   return (singleton !== false && isSingleton(container, fullName)) &&
-         (instantiate !== false && shouldInstantiate(container, fullName));
+         (instantiate !== false && isInstantiatable(container, fullName));
 }
 
 function isFactoryClass(container, fullname, { instantiate, singleton }) {
   return (singleton === false || !isSingleton(container, fullname)) &&
-         (instantiate === false && !shouldInstantiate(container, fullname));
+         (instantiate === false && !isInstantiatable(container, fullname));
 }
 
 function isFactoryInstance(container, fullName, { instantiate, singleton }) {
   return (singleton !== false || isSingleton(container, fullName)) &&
-         (instantiate !== false && shouldInstantiate(container, fullName));
+         (instantiate !== false && isInstantiatable(container, fullName));
 }
 
 function instantiateFactory(container, fullName, options) {
@@ -586,7 +586,7 @@ function destroyDestroyables(container) {
     let key = keys[i];
     let value = cache[key];
 
-    if (shouldInstantiate(container, key) && value.destroy) {
+    if (isInstantiatable(container, key) && value.destroy) {
       value.destroy();
     }
   }
