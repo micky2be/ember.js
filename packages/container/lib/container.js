@@ -586,7 +586,7 @@ function destroyDestroyables(container) {
     let key = keys[i];
     let value = cache[key];
 
-    if (container.registry.getOption(key, 'instantiate') !== false && value.destroy) {
+    if (shouldInstantiate(container, key) && value.destroy) {
       value.destroy();
     }
   }
