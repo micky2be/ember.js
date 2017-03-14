@@ -192,12 +192,7 @@ Container.prototype = {
    @method destroy
    */
   destroy() {
-    eachDestroyable(this, item => {
-      if (item.destroy) {
-        item.destroy();
-      }
-    });
-
+    destroyDestroyables(this);
     this.isDestroyed = true;
   },
 
@@ -583,7 +578,7 @@ function injectDeprecatedContainer(object, container) {
   });
 }
 
-function eachDestroyable(container, callback) {
+function destroyDestroyables(container) {
   let cache = container.cache;
   let keys = Object.keys(cache);
 
@@ -591,19 +586,14 @@ function eachDestroyable(container, callback) {
     let key = keys[i];
     let value = cache[key];
 
-    if (container.registry.getOption(key, 'instantiate') !== false) {
-      callback(value);
+    if (container.registry.getOption(key, 'instantiate') !== false && value.destroy) {
+      value.destroy();
     }
   }
 }
 
 function resetCache(container) {
-  eachDestroyable(container, (value) => {
-    if (value.destroy) {
-      value.destroy();
-    }
-  });
-
+  destroyDestroyables(container);
   container.cache.dict = dictionary(null);
 }
 
