@@ -314,8 +314,12 @@ ComputedPropertyPrototype.didChange = function(obj, keyName) {
 };
 
 function finishChains(chainNodes) {
+  var node;
   for (var i=0, l=chainNodes.length; i<l; i++) {
-    chainNodes[i].didChange(null);
+    node = chainNodes[i];
+    if (node) {
+      node.didChange(null);
+    }
   }
 }
 

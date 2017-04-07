@@ -283,11 +283,12 @@ ChainNode.prototype = {
   willChange(events) {
     var chains = this._chains;
     if (chains) {
+      var node;
       for (var key in chains) {
-        if (!chains.hasOwnProperty(key)) {
-          continue;
+        node = chains[key];
+        if (node) {
+          node.willChange(events);
         }
-        chains[key].willChange(events);
       }
     }
 
@@ -389,8 +390,12 @@ export function finishChains(obj) {
 
         chainNodes = chainWatchers[key];
         if (chainNodes) {
+          var node;
           for (var i = 0, l = chainNodes.length; i < l; i++) {
-            chainNodes[i].didChange(null);
+            node = chainNodes[i];
+            if (node) {
+              node.didChange(null);
+            }
           }
         }
       }
